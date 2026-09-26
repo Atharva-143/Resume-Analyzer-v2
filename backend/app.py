@@ -65,6 +65,8 @@ def home():
             "uploads"
         )
 
+        os.makedirs(upload_folder, exist_ok=True)
+        
         # Save PDF
         file.save(
             os.path.join(upload_folder, file.filename)
