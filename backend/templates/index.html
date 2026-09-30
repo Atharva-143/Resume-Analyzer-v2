@@ -1,94 +1,575 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Resume Analyzer v2</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-    <h1>Resume Analyzer v2</h1>
+    <!-- Background Decorations -->
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
 
-    <p>Upload your resume and compare it with a Job Description.</p>
+    <!-- Navigation -->
+    <nav class="navbar">
 
-    <!-- Display validation errors -->
-    {% if error %}
-    <p>{{ error }}</p>
-    {% endif %}
+        <div class="nav-logo">
+            <span class="logo-icon">📄</span>
+            <span>Resume<span class="logo-highlight">Analyzer</span></span>
+        </div>
 
-    <form method="POST" enctype="multipart/form-data">
+        <div class="nav-badge">
+            v2.0
+        </div>
 
-        <label>Upload Resume (PDF):</label>
-        <br><br>
-
-        <input type="file" name="resume" accept=".pdf,application/pdf">
-
-        <br><br>
-
-        <label>Job Description:</label>
-        <br><br>
-
-        <textarea name="job_description" rows="10" cols="60" placeholder="Paste the Job Description here"></textarea>
-
-        <br><br>
-
-        <button type="submit">Analyze Resume</button>
-
-    </form>
+    </nav>
 
 
-    <!-- Display analysis results -->
-    {% if score is defined %}
+    <!-- Main Content -->
+    <main class="container">
 
-    <hr>
+        <!-- Hero Section -->
+        <section class="hero">
 
-    <h2>ATS Score</h2>
-    <h3>{{ score }}%</h3>
+            <div class="hero-badge">
+                ✨ Smart Resume Analysis
+            </div>
 
-    <h2>Resume Section Score</h2>
-    <h3>{{ section_score }}/100</h3>
+            <h1>
+                Make Your Resume
+                <span>Job-Ready.</span>
+            </h1>
 
-    <h2>Skill Analysis</h2>
+            <p class="hero-description">
+                Compare your resume with any job description and discover
+                your ATS score, matched skills, missing skills, and
+                improvement opportunities.
+            </p>
 
-    <p>
-        Required Skills: {{ required_skills_count }}
-    </p>
+        </section>
 
-    <p>
-        Matched Skills: {{ matched_skills_count }}
-    </p>
 
-    <p>
-        Missing Skills: {{ missing_skills_count }}
-    </p>
+        <!-- Error Message -->
+        {% if error %}
+        <div class="error-message">
+            <span>⚠️</span>
+            <div>
+                <strong>Something went wrong</strong>
+                <p>{{ error }}</p>
+            </div>
+        </div>
+        {% endif %}
 
-    <h2>Matched Skills</h2>
 
-    <ul>
-        {% for skill in matched_skills %}
-        <li>{{ skill }}</li>
-        {% endfor %}
-    </ul>
+        <!-- Analyzer Card -->
+        <section class="analyzer-card">
 
-    <h2>Missing Skills</h2>
+            <div class="card-header">
+                <div>
+                    <h2>Analyze Your Resume</h2>
+                    <p>Upload your resume and add the target job description.</p>
+                </div>
 
-    <ul>
-        {% for skill in missing_skills %}
-        <li>{{ skill }}</li>
-        {% endfor %}
-    </ul>
+                <div class="secure-badge">
+                    🔒 Secure Analysis
+                </div>
+            </div>
 
-    <!-- Improvement Recommendations -->
-    <h2>💡 Improvement Recommendations</h2>
 
-    <ul>
-        {% for recommendation in recommendations %}
-        <li>{{ recommendation }}</li>
-        {% endfor %}
-    </ul>
+            <form method="POST" enctype="multipart/form-data" id="resumeForm">
 
-    {% endif %}
+                <!-- Resume Upload -->
+                <div class="form-section">
+
+                    <label class="form-label">
+                        <span class="label-icon">📄</span>
+                        Upload Resume
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="upload-box" id="uploadBox">
+
+                        <div class="upload-icon">
+                            📁
+                        </div>
+
+                        <h3>Drop your resume here</h3>
+
+                        <p>
+                            or
+                            <span class="browse-text">browse files</span>
+                        </p>
+
+                        <small>PDF files only</small>
+
+                        <input type="file" name="resume" id="resume" accept=".pdf,application/pdf" required>
+
+                    </div>
+
+                    <div class="selected-file" id="selectedFile">
+                        <span>✅</span>
+                        <span id="fileName"></span>
+                    </div>
+
+                </div>
+
+
+                <!-- Job Description -->
+                <div class="form-section">
+
+                    <label class="form-label" for="jobDescription">
+                        <span class="label-icon">💼</span>
+                        Job Description
+                        <span class="required">*</span>
+                    </label>
+
+                    <textarea name="job_description" id="jobDescription" class="job-textarea" placeholder="Paste the job description here...
+
+Example:
+We are looking for a Python developer with experience in Flask, SQL, REST APIs and JavaScript." required></textarea>
+
+                    <div class="textarea-footer">
+                        <span>💡 Include the complete job description for better analysis.</span>
+                    </div>
+
+                </div>
+
+
+                <!-- Analyze Button -->
+                <button type="submit" class="analyze-button" id="analyzeButton">
+
+                    <span class="button-icon">✨</span>
+
+                    <span id="buttonText">
+                        Analyze My Resume
+                    </span>
+
+                    <span class="button-arrow">→</span>
+
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- Feature Cards -->
+        <section class="features">
+
+            <div class="feature-card">
+
+                <div class="feature-icon blue">
+                    ⚡
+                </div>
+
+                <div>
+                    <h3>Fast Analysis</h3>
+                    <p>Quickly analyze your resume against a job description.</p>
+                </div>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon purple">
+                    🎯
+                </div>
+
+                <div>
+                    <h3>Skill Matching</h3>
+                    <p>Identify matched and missing skills automatically.</p>
+                </div>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon green">
+                    📊
+                </div>
+
+                <div>
+                    <h3>ATS Score</h3>
+                    <p>Understand how closely your resume matches the role.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Analysis Results -->
+        {% if score is defined %}
+
+        <section class="results-section">
+
+            <div class="results-header">
+
+                <div>
+                    <div class="result-badge">
+                        🎉 Analysis Complete
+                    </div>
+
+                    <h2>Your Resume Analysis</h2>
+
+                    <p>
+                        Here's how your resume matches the provided job description.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Score Cards -->
+            <div class="score-grid">
+
+                <div class="score-card main-score">
+
+                    <div class="score-circle">
+                        <div class="score-value">
+                            {{ score }}%
+                        </div>
+                    </div>
+
+                    <h3>ATS Match Score</h3>
+
+                    <p>
+                        Overall resume compatibility
+                    </p>
+
+                </div>
+
+
+                <div class="score-card">
+
+                    <div class="small-score-icon">
+                        📑
+                    </div>
+
+                    <div class="small-score-value">
+                        {{ section_score }}/100
+                    </div>
+
+                    <h3>Resume Section Score</h3>
+
+                    <p>
+                        Section coverage
+                    </p>
+
+                </div>
+
+
+                <div class="score-card">
+
+                    <div class="small-score-icon">
+                        🎯
+                    </div>
+
+                    <div class="small-score-value">
+                        {{ matched_skills_count }}
+                    </div>
+
+                    <h3>Matched Skills</h3>
+
+                    <p>
+                        Relevant skills found
+                    </p>
+
+                </div>
+
+
+                <div class="score-card">
+
+                    <div class="small-score-icon">
+                        ⚠️
+                    </div>
+
+                    <div class="small-score-value">
+                        {{ missing_skills_count }}
+                    </div>
+
+                    <h3>Missing Skills</h3>
+
+                    <p>
+                        Skills to consider adding
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Skill Summary -->
+            <div class="results-grid">
+
+                <!-- Matched Skills -->
+                <div class="result-card matched-card">
+
+                    <div class="result-card-header">
+
+                        <div class="result-icon success">
+                            ✓
+                        </div>
+
+                        <div>
+                            <h3>Matched Skills</h3>
+                            <p>{{ matched_skills_count }} skills found</p>
+                        </div>
+
+                    </div>
+
+                    <div class="skill-list">
+
+                        {% for skill in matched_skills %}
+
+                        <span class="skill-tag matched">
+                            ✓ {{ skill }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Missing Skills -->
+                <div class="result-card missing-card">
+
+                    <div class="result-card-header">
+
+                        <div class="result-icon danger">
+                            !
+                        </div>
+
+                        <div>
+                            <h3>Missing Skills</h3>
+                            <p>{{ missing_skills_count }} skills missing</p>
+                        </div>
+
+                    </div>
+
+                    <div class="skill-list">
+
+                        {% for skill in missing_skills %}
+
+                        <span class="skill-tag missing">
+                            + {{ skill }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Skill Statistics -->
+            <div class="statistics-card">
+
+                <div class="statistics-header">
+
+                    <div>
+                        <h3>📊 Skill Analysis</h3>
+                        <p>Overview of the skills detected in the job description.</p>
+                    </div>
+
+                </div>
+
+                <div class="statistics-grid">
+
+                    <div class="stat-item">
+                        <span class="stat-number">
+                            {{ required_skills_count }}
+                        </span>
+                        <span class="stat-label">
+                            Required Skills
+                        </span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-number success-text">
+                            {{ matched_skills_count }}
+                        </span>
+                        <span class="stat-label">
+                            Matched Skills
+                        </span>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-number danger-text">
+                            {{ missing_skills_count }}
+                        </span>
+                        <span class="stat-label">
+                            Missing Skills
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Recommendations -->
+            <div class="recommendations-card">
+
+                <div class="recommendations-header">
+
+                    <div class="recommendation-icon">
+                        💡
+                    </div>
+
+                    <div>
+                        <h3>Improvement Recommendations</h3>
+                        <p>Suggestions to strengthen your resume.</p>
+                    </div>
+
+                </div>
+
+                <ul class="recommendation-list">
+
+                    {% for recommendation in recommendations %}
+
+                    <li>
+                        <span class="recommendation-check">✓</span>
+                        <span>{{ recommendation }}</span>
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+
+            <!-- Analyze Again -->
+            <a href="/" class="analyze-again">
+                ← Analyze Another Resume
+            </a>
+
+        </section>
+
+        {% endif %}
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <div class="footer-logo">
+            📄 Resume Analyzer v2
+        </div>
+
+        <p>
+            Built with Python • Flask • HTML • CSS • JavaScript
+        </p>
+
+        <p class="copyright">
+            © 2026 Atharva Besikrao
+        </p>
+
+    </footer>
+
+
+    <!-- Small JavaScript enhancements -->
+    <script>
+
+        const resumeInput = document.getElementById("resume");
+        const uploadBox = document.getElementById("uploadBox");
+        const selectedFile = document.getElementById("selectedFile");
+        const fileName = document.getElementById("fileName");
+
+        const form = document.getElementById("resumeForm");
+        const analyzeButton = document.getElementById("analyzeButton");
+        const buttonText = document.getElementById("buttonText");
+
+
+        /* Display selected file name */
+
+        resumeInput.addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                const file = this.files[0];
+
+                fileName.textContent = file.name;
+
+                selectedFile.classList.add("show");
+
+                uploadBox.classList.add("file-selected");
+
+            }
+
+        });
+
+
+        /* Drag and drop */
+
+        uploadBox.addEventListener("dragover", function (event) {
+
+            event.preventDefault();
+
+            uploadBox.classList.add("dragging");
+
+        });
+
+
+        uploadBox.addEventListener("dragleave", function () {
+
+            uploadBox.classList.remove("dragging");
+
+        });
+
+
+        uploadBox.addEventListener("drop", function (event) {
+
+            event.preventDefault();
+
+            uploadBox.classList.remove("dragging");
+
+            if (event.dataTransfer.files.length > 0) {
+
+                resumeInput.files = event.dataTransfer.files;
+
+                const file = event.dataTransfer.files[0];
+
+                fileName.textContent = file.name;
+
+                selectedFile.classList.add("show");
+
+                uploadBox.classList.add("file-selected");
+
+            }
+
+        });
+
+
+        /* Loading state when analyzing */
+
+        form.addEventListener("submit", function () {
+
+            analyzeButton.classList.add("loading");
+
+            buttonText.textContent = "Analyzing Resume...";
+
+        });
+
+    </script>
 
 </body>
 
